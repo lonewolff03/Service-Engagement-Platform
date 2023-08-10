@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> Sign up </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">   
+    
+</head>
+
+<body>
+    <div th:replace="~{navbar::navbar1}"></div>
+    
+    <div class="container text-center mt-5">
+    	<div class="h4" th:text="${session.registerStatusMsg}"></div>
+    </div>
+    
+    <div class="container mt-3 mb-2 pb-3">
+		<div class="row justify-content-center my-3">
+		
+			<div class="col-lg-6 p-5 bg-light">
+			
+				<div class="text-center display-6 mb-4">
+			    	Sign up as a customer
+			    </div>
+			    
+				<form method="POST" th:object="${customer}">
+					<div class="h4 my-3">Customer Details:</div>
+					
+					<label for="firstName" class="form-label my-1">First Name: </label>
+            		<input type="text" class="form-control" th:field="*{firstName}"/>
+            		
+            		<label for="lastName" class="form-label my-1">Last Name: </label>
+            		<input type="text" class="form-control" th:field="*{lastName}"/>
+		            
+		            <div class="h4 my-3">Customer Address:</div>
+		            
+		            <label for="address" class="form-label my-1"> Address: </label>
+		            <input type="text" class="form-control" th:field="*{address}"/>
+		            
+		            <label for="countryCode" class="form-label my-1"> Country: </label>
+		            <select id="countries" class="form-select" th:field="*{countryCode}" onchange="fetchStates()" aria-label="Default select example">
+		            	<option th:value="0">Select Country</option>
+		            	<option th:each="country: ${countriesMap}" th:value="${country.key}" th:text="${country.value}"></option>
+		            </select>
+		            
+		            <label for="stateCode" class="form-label my-1"> State: </label>
+		            <select id="states" class="form-select" th:field="*{stateCode}" onchange="fetchCities()" aria-label="Default select example">
+		            	<option th:value="0">Select State</option>
+		            </select>
+		            
+		            <label for="cityCode" class="form-label my-1"> City: </label>
+		            <select id="cities" class="form-select" th:field="*{cityCode}" aria-label="Default select example">
+		            	<option th:value="0">Select City</option>
+		            </select>
+		
+		            <label for="pinCode" class="form-label my-1"> PIN Code: </label>
+		            <input type="text" class="form-control" th:field="*{pinCode}"/>
+		            
+		            <div class="h4 my-3">Contact Details:</div>
+
+		            <label for="emailAddress" class="form-label my-1"> Email Address: </label>
+		            <input type="text" class="form-control" th:field="*{emailAddress}"/>
+		
+		            <label for="phoneNumber" class="form-label my-1"> Phone Number:</label>
+		            <input type="text" class="form-control" th:field="*{phoneNumber}"/>
+		
+		            <div class="h4 my-3">Set your credentials:</div>
+		
+		            <label for="userId" class="form-label my-1"> Set your user id: </label>
+		            <input type="text" class="form-control" th:field="*{userId}"/>
+		
+		            <label for="password" class="form-label my-1"> Set password: </label>
+		            <input type="text" class="form-control" th:field="*{password}"/>
+		            
+		            <div class="my-3 text-center">
+		            	<button class="btn btn-secondary" type="submit">Register</button>
+		            </div>
+			        
+			    </form>
+			</div>
+	    </div> 
+	</div>
+	
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	
+	<script type="text/javascript">
+    	function fetchStates(){
+    		var countryName = $("#countries option:selected").text();
+    		
+    		var countryCode = $("#countries option:selected").val();
+    		
+    		console.log(countryCode);
+    		
+    		if (countryName !== '') {
+                $.ajax({
+                    url: '/api/states?country=' + countryName,
+                    type: 'GET',
+                    success: function (result) {
+                        var stateDropdown = $("#states");
+                        stateDropdown.empty();
+                        stateDropdown.append('<option th:value="0">Select City</option>');
+                        $.each(result.states, function (code, name) {
+                            stateDropdown.append('<option value="' + code + '">' + name + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $("#states").empty();
+            }
+        }
+    	
+    	function fetchCities(){
+    		var stateName = $("#states option:selected").text();
+    		
+    		if (stateName !== '') {
+                $.ajax({
+                    url: '/api/cities?state=' + stateName,
+                    type: 'GET',
+                    success: function (result) {
+                        var cityDropdown = $("#cities");
+                        cityDropdown.empty();
+                        cityDropdown.append('<option th:value="0">Select City</option>');
+                        $.each(result.cities, function (code, name) {
+                            cityDropdown.append('<option value="' + code + '">' + name + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $("#cities").empty();
+            }
+        }
+    	
+    </script>
+</body>
+
+</html>

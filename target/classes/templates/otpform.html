@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> Enter OTP </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">   
+</head>
+
+<body>
+    <div th:replace="~{navbar::navbar1}"></div>
+    
+    <div class="container mt-5 mb-2 pb-3">
+		<div class="row justify-content-center my-3">
+		
+			<div class="col-lg-6 p-5 bg-light">
+			
+				<div class="text-center display-6 mb-4">
+			    	We have sent an OTP to the email you have entered.
+			    </div>
+			    
+				<form method="POST" th:object="${otpForm}">
+					<label for="OTP" class="form-label">Enter OTP : </label>
+            		<input type="password" class="form-control" th:field="*{otp}"/>  
+		            
+		            <div class="my-3 text-center">
+		            	<button class="btn btn-secondary" type="submit">Verify</button>
+		            </div>
+			        
+			    </form>
+			</div>
+	    </div> 
+	</div>
+	
+	<div class="container text-center">
+    	<div class="h4" th:text="${session.otpFormStatusMsg}"></div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
